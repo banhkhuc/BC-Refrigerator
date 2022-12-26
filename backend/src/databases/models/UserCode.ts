@@ -1,17 +1,17 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from 'databases';
 
-export interface FacilityModel extends Model<InferAttributes<FacilityModel>, InferCreationAttributes<FacilityModel>> {
+export interface UserCodeModel extends Model<InferAttributes<UserCodeModel>, InferCreationAttributes<UserCodeModel>> {
 	id: CreationOptional<number>;
-	name: string;
-	address: string;
-	type: string;
+	account: string;
+	code: string;
+	expires: Date;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
 }
 
-const Facility = sequelize.define<FacilityModel>(
-	'Facility',
+const UserCode = sequelize.define<UserCodeModel>(
+	'UserCode',
 	{
 		id: {
 			allowNull: false,
@@ -19,16 +19,17 @@ const Facility = sequelize.define<FacilityModel>(
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
-		name: {
+		account: {
 			allowNull: false,
 			type: DataTypes.STRING
 		},
-		address: {
-			type: DataTypes.STRING
-		},
-		type: {
+		code: {
 			allowNull: false,
 			type: DataTypes.STRING
+		},
+		expires: {
+			allowNull: false,
+			type: DataTypes.DATE
 		},
 		createdAt: {
 			type: DataTypes.DATE
@@ -38,9 +39,9 @@ const Facility = sequelize.define<FacilityModel>(
 		}
 	},
 	{
-		tableName: 'facility',
+		tableName: 'user_code',
 		underscored: true
 	}
 );
 
-export default Facility;
+export default UserCode;
