@@ -6,16 +6,5 @@ export default {
 	mysql_password: process.env.MYSQL_PASSWORD,
 	mysql_database: process.env.MYSQL_DATABASE,
 	secret_key: process.env.SECRET_KEY,
-	expires_in: process.env.EXPIRESIN,
-	mail_setting: {
-		service: 'gmail',
-		auth: {
-			user: process.env.MAIL_EMAIL,
-			pass: process.env.MAIL_PASSWORD
-		}
-	},
-	qr_code_base_url: process.env.QR_CODE_BASE_URL,
-	casso_base_url: process.env.CASSO_BASE_URL,
-	casso_api_key: process.env.CASSO_API_KEY,
-	bank_acc_number: process.env.BANK_ACC_NUMBER
+	expires_in: process.env.EXPIRESIN
 };

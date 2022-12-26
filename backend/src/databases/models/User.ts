@@ -5,20 +5,18 @@ import {
 	InferAttributes,
 	InferCreationAttributes,
 	Model,
-	HasManyGetAssociationsMixin,
 	NonAttribute,
 	HasManySetAssociationsMixin
 } from 'sequelize';
 import sequelize from 'databases';
-import { RoleModel } from './Role';
+import Role, { RoleModel } from './Role';
 export interface UserModel extends Model<InferAttributes<UserModel>, InferCreationAttributes<UserModel>> {
 	// Some fields are optional when calling UserModel.create() or UserModel.build(	)
 	id: CreationOptional<number>;
-	email: string;
+	account: string;
 	password: string;
 	fullName: string;
-	phone: string;
-	birthDay: Date;
+	email: string;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
 
@@ -35,7 +33,7 @@ const User = sequelize.define<UserModel>(
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
-		email: {
+		account: {
 			allowNull: false,
 			unique: true,
 			type: DataTypes.STRING
@@ -47,11 +45,8 @@ const User = sequelize.define<UserModel>(
 		fullName: {
 			type: DataTypes.STRING
 		},
-		phone: {
+		email: {
 			type: DataTypes.STRING
-		},
-		birthDay: {
-			type: DataTypes.DATEONLY
 		},
 		createdAt: {
 			type: DataTypes.DATE
@@ -70,5 +65,8 @@ User.beforeCreate(user => {
 	const hashedPassword = bcrypt.hashSync(user.password, 10);
 	user.password = hashedPassword;
 });
+
+Role.hasMany(User);
+User.belongsTo(Role);
 
 export default User;

@@ -1,31 +1,20 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from 'databases';
 
-export interface NationalityModel
-	extends Model<InferAttributes<NationalityModel>, InferCreationAttributes<NationalityModel>> {
+export interface FailModel extends Model<InferAttributes<FailModel>, InferCreationAttributes<FailModel>> {
 	id: CreationOptional<number>;
-	name: string;
-	imageUrl: string;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
 }
 
-const Nationality = sequelize.define<NationalityModel>(
-	'Nationality',
+const Fail = sequelize.define<FailModel>(
+	'Fail',
 	{
 		id: {
 			allowNull: false,
 			autoIncrement: true,
 			primaryKey: true,
 			type: DataTypes.INTEGER
-		},
-		name: {
-			allowNull: false,
-			unique: true,
-			type: DataTypes.STRING
-		},
-		imageUrl: {
-			type: DataTypes.STRING
 		},
 		createdAt: {
 			type: DataTypes.DATE
@@ -35,9 +24,9 @@ const Nationality = sequelize.define<NationalityModel>(
 		}
 	},
 	{
-		tableName: 'nationality',
+		tableName: 'fail',
 		underscored: true
 	}
 );
 
-export default Nationality;
+export default Fail;

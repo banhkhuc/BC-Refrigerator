@@ -1,15 +1,18 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from 'databases';
 
-export interface RoleModel extends Model<InferAttributes<RoleModel>, InferCreationAttributes<RoleModel>> {
+export interface OrderModel extends Model<InferAttributes<OrderModel>, InferCreationAttributes<OrderModel>> {
 	id: CreationOptional<number>;
-	name: string;
+	saleDate: Date;
+	customerName: string;
+	customerPhone: string;
+	customerAddress: string;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
 }
 
-const Role = sequelize.define<RoleModel>(
-	'Role',
+const Order = sequelize.define<OrderModel>(
+	'Order',
 	{
 		id: {
 			allowNull: false,
@@ -17,9 +20,18 @@ const Role = sequelize.define<RoleModel>(
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
-		name: {
+		saleDate: {
 			allowNull: false,
-			unique: true,
+			type: DataTypes.DATE
+		},
+		customerName: {
+			allowNull: false,
+			type: DataTypes.STRING
+		},
+		customerPhone: {
+			type: DataTypes.STRING
+		},
+		customerAddress: {
 			type: DataTypes.STRING
 		},
 		createdAt: {
@@ -30,9 +42,9 @@ const Role = sequelize.define<RoleModel>(
 		}
 	},
 	{
-		tableName: 'role',
+		tableName: 'order',
 		underscored: true
 	}
 );
 
-export default Role;
+export default Order;
