@@ -9,7 +9,7 @@ const createAccount = async (req: Request, res: Response) => {
 		const result = await service.createAccount(req.body);
 		return new ApiResponse(result.data, result.message, result.status).send(res);
 	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't login.", ResponeCodes.ERROR).send(res);
+		return new ApiResponse(error.message, "Couldn't create account.", ResponeCodes.ERROR).send(res);
 	}
 };
 

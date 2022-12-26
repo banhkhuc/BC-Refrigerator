@@ -7,7 +7,6 @@ export interface InsuranceModel
 	extends Model<InferAttributes<InsuranceModel>, InferCreationAttributes<InsuranceModel>> {
 	id: CreationOptional<number>;
 	error: string;
-	guaranteeStatus: string;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
 }
@@ -22,9 +21,6 @@ const Insurance = sequelize.define<InsuranceModel>(
 			type: DataTypes.INTEGER
 		},
 		error: {
-			type: DataTypes.STRING
-		},
-		guaranteeStatus: {
 			type: DataTypes.STRING
 		},
 		createdAt: {
