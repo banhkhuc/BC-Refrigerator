@@ -7,7 +7,7 @@ export interface ProductModel extends Model<InferAttributes<ProductModel>, Infer
 	id: CreationOptional<number>;
 	mfg: CreationOptional<Date>;
 	distributeDate: CreationOptional<Date>;
-	sold: boolean;
+	status: string;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
 }
@@ -28,10 +28,10 @@ const Product = sequelize.define<ProductModel>(
 		distributeDate: {
 			type: DataTypes.DATE
 		},
-		sold: {
+		status: {
 			allowNull: false,
 			defaultValue: false,
-			type: DataTypes.BOOLEAN
+			type: DataTypes.STRING
 		},
 		createdAt: {
 			type: DataTypes.DATE

@@ -4,10 +4,10 @@ import Product from './Product';
 
 export interface OrderModel extends Model<InferAttributes<OrderModel>, InferCreationAttributes<OrderModel>> {
 	id: CreationOptional<number>;
+	orderName: string;
+	orderPhone: string;
+	orderAddress: string;
 	orderDate: Date;
-	customerName: string;
-	customerPhone: string;
-	customerAddress: string;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
 }
@@ -21,19 +21,19 @@ const Order = sequelize.define<OrderModel>(
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
+		orderName: {
+			allowNull: false,
+			type: DataTypes.STRING
+		},
+		orderPhone: {
+			type: DataTypes.STRING
+		},
+		orderAddress: {
+			type: DataTypes.STRING
+		},
 		orderDate: {
 			allowNull: false,
 			type: DataTypes.DATE
-		},
-		customerName: {
-			allowNull: false,
-			type: DataTypes.STRING
-		},
-		customerPhone: {
-			type: DataTypes.STRING
-		},
-		customerAddress: {
-			type: DataTypes.STRING
 		},
 		createdAt: {
 			type: DataTypes.DATE
@@ -48,7 +48,7 @@ const Order = sequelize.define<OrderModel>(
 	}
 );
 
-Product.hasOne(Order)
+Product.hasOne(Order);
 Order.belongsTo(Product);
 
 export default Order;
