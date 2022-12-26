@@ -1,13 +1,12 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from 'databases';
+import ProductLine from './ProductLine';
+import Facility from './Facility';
 
 export interface ProductModel extends Model<InferAttributes<ProductModel>, InferCreationAttributes<ProductModel>> {
 	id: CreationOptional<number>;
-	id_products_lines: number;
-	id_produce: number;
 	mfg: CreationOptional<Date>;
-	id_distribute: number;
-	import_date_distribute: CreationOptional<Date>;
+	distributeDate: CreationOptional<Date>;
 	sold: boolean;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
@@ -22,24 +21,11 @@ const Product = sequelize.define<ProductModel>(
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
-		id_products_lines: {
-			allowNull: false,
-			type: DataTypes.INTEGER
-		},
-		id_produce: {
-			allowNull: false,
-			type: DataTypes.INTEGER
-		},
 		mfg: {
 			allowNull: false,
 			type: DataTypes.DATE
 		},
-		id_distribute: {
-			allowNull: true,
-			type: DataTypes.INTEGER
-		},
-		import_date_distribute: {
-			allowNull: true,
+		distributeDate: {
 			type: DataTypes.DATE
 		},
 		sold: {
@@ -59,5 +45,16 @@ const Product = sequelize.define<ProductModel>(
 		underscored: true
 	}
 );
+
+ProductLine.hasMany(Product);
+Product.belongsTo(ProductLine);
+
+Facility.hasMany(Product, {
+	foreignKey: 'produceId'
+});
+
+Facility.hasMany(Product, {
+	foreignKey: 'distributeId'
+});
 
 export default Product;
