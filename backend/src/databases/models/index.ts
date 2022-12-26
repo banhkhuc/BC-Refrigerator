@@ -1,7 +1,10 @@
 import User from './User';
 import Role from './Role';
+import Product from './Product';
+import ProductLine from './ProductLine';
 import Order from './Order';
 import Insurance from './Insurance';
 import Fail from './Fail';
+import Nationality from './Nationality';
 
-export { User, Role, Order, Insurance, Fail };
+export { User, Role, Product, ProductLine, Order, Insurance, Fail, Nationality };

@@ -1,13 +1,5 @@
 import bcrypt from 'bcrypt';
-import {
-	CreationOptional,
-	DataTypes,
-	InferAttributes,
-	InferCreationAttributes,
-	Model,
-	NonAttribute,
-	HasManySetAssociationsMixin
-} from 'sequelize';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from 'sequelize';
 import sequelize from 'databases';
 import Role, { RoleModel } from './Role';
 export interface UserModel extends Model<InferAttributes<UserModel>, InferCreationAttributes<UserModel>> {
@@ -20,8 +12,7 @@ export interface UserModel extends Model<InferAttributes<UserModel>, InferCreati
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
 
-	Roles?: NonAttribute<RoleModel[]>;
-	setRoles: HasManySetAssociationsMixin<RoleModel, RoleModel['id']>;
+	Role?: NonAttribute<RoleModel[]>;
 }
 
 const User = sequelize.define<UserModel>(
