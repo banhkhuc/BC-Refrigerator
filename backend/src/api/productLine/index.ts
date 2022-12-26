@@ -1,13 +1,12 @@
 import Router from 'express';
 import { verifyAdmin, verifyToken } from 'middlewares';
-import { getNationalities, getNationality, addNationality, updateNationality, deleteNationality } from './controller';
+import { getProductLine, getProductLineById, addProductLine, updateProductLine} from './controller';
 
 const router = Router();
 
-router.get('/pagination', [verifyToken, verifyAdmin], getNationalities);
-router.get('/:id', getNationality);
-router.post('/', [verifyToken, verifyAdmin], addNationality);
-router.patch('/:id', [verifyToken, verifyAdmin], updateNationality);
-router.delete('/:id', [verifyToken, verifyAdmin], deleteNationality);
+router.get('/pagination', getProductLine);
+router.get('/:id', getProductLineById);
+router.post('/', addProductLine);
+router.patch('/:id', updateProductLine);
 
 export default router;

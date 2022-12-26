@@ -1,8 +1,8 @@
 interface ProductLines {
     name: string;
     model: string;
-    photo_url?: string;
-    guarantee_period: number;
+    photoUrl?: string;
+    guaranteePeriod: number;
 }
 
 export default ProductLines;

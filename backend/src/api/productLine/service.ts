@@ -64,7 +64,7 @@ const addProductLine = async (req: Request) => {
 		let status: number;
 
 		const newProductLines: ProductLines = req.body;
-
+		
 		if (!newProductLines.name) {
 			data = null;
 			message = 'Name null.';
@@ -89,7 +89,6 @@ const addProductLine = async (req: Request) => {
 				status = ResponeCodes.OK;
 			}
 		}
-
 		return {
 			data,
 			message,
