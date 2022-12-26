@@ -5,6 +5,7 @@ console.log('Connecting to database.');
 const sequelize = new Sequelize(config.mysql_database, config.mysql_username, config.mysql_password, {
 	host: config.mysql_host,
 	port: config.mysql_port,
+	logging: false,
 	dialect: 'mysql'
 });
 
