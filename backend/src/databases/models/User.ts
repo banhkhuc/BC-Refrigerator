@@ -1,8 +1,17 @@
 import bcrypt from 'bcrypt';
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from 'sequelize';
+import {
+	BelongsToSetAssociationMixin,
+	CreationOptional,
+	DataTypes,
+	InferAttributes,
+	InferCreationAttributes,
+	Model,
+	NonAttribute
+} from 'sequelize';
 import sequelize from 'databases';
 import Role, { RoleModel } from './Role';
-import Facility from './Facility';
+import Facility, { FacilityModel } from './Facility';
+
 export interface UserModel extends Model<InferAttributes<UserModel>, InferCreationAttributes<UserModel>> {
 	// Some fields are optional when calling UserModel.create() or UserModel.build(	)
 	id: CreationOptional<number>;
@@ -12,8 +21,10 @@ export interface UserModel extends Model<InferAttributes<UserModel>, InferCreati
 	email: string;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
+	Role?: NonAttribute<RoleModel>;
 
-	Role?: NonAttribute<RoleModel[]>;
+	setRole: BelongsToSetAssociationMixin<RoleModel, RoleModel['id']>;
+	setFacility: BelongsToSetAssociationMixin<FacilityModel, FacilityModel['id']>;
 }
 
 const User = sequelize.define<UserModel>(
@@ -38,6 +49,8 @@ const User = sequelize.define<UserModel>(
 			type: DataTypes.STRING
 		},
 		email: {
+			allowNull: false,
+			unique: true,
 			type: DataTypes.STRING
 		},
 		createdAt: {
@@ -52,11 +65,6 @@ const User = sequelize.define<UserModel>(
 		underscored: true
 	}
 );
-
-User.beforeCreate(user => {
-	const hashedPassword = bcrypt.hashSync(user.password, 10);
-	user.password = hashedPassword;
-});
 
 Role.hasMany(User);
 User.belongsTo(Role);
