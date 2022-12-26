@@ -1,5 +1,7 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from 'databases';
+import Product from './Product';
+import Facility from './Facility';
 
 export interface InsuranceModel
 	extends Model<InferAttributes<InsuranceModel>, InferCreationAttributes<InsuranceModel>> {
@@ -37,5 +39,16 @@ const Insurance = sequelize.define<InsuranceModel>(
 		underscored: true
 	}
 );
+
+Product.hasMany(Insurance);
+Insurance.belongsTo(Product);
+
+Facility.hasMany(Insurance, {
+	foreignKey: 'distributeId'
+});
+
+Facility.hasMany(Insurance, {
+	foreignKey: 'guaranteeId'
+});
 
 export default Insurance;

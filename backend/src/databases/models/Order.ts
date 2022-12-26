@@ -1,9 +1,10 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from 'databases';
+import Product from './Product';
 
 export interface OrderModel extends Model<InferAttributes<OrderModel>, InferCreationAttributes<OrderModel>> {
 	id: CreationOptional<number>;
-	saleDate: Date;
+	orderDate: Date;
 	customerName: string;
 	customerPhone: string;
 	customerAddress: string;
@@ -20,7 +21,7 @@ const Order = sequelize.define<OrderModel>(
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
-		saleDate: {
+		orderDate: {
 			allowNull: false,
 			type: DataTypes.DATE
 		},
@@ -46,5 +47,8 @@ const Order = sequelize.define<OrderModel>(
 		underscored: true
 	}
 );
+
+Product.hasOne(Order)
+Order.belongsTo(Product);
 
 export default Order;

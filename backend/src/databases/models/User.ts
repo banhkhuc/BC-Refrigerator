@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from 'sequelize';
 import sequelize from 'databases';
 import Role, { RoleModel } from './Role';
+import Facility from './Facility';
 export interface UserModel extends Model<InferAttributes<UserModel>, InferCreationAttributes<UserModel>> {
 	// Some fields are optional when calling UserModel.create() or UserModel.build(	)
 	id: CreationOptional<number>;
@@ -59,5 +60,8 @@ User.beforeCreate(user => {
 
 Role.hasMany(User);
 User.belongsTo(Role);
+
+Facility.hasMany(User);
+User.belongsTo(Facility);
 
 export default User;

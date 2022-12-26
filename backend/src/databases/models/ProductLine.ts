@@ -6,7 +6,7 @@ export interface ProductLineModel
 	id: CreationOptional<number>;
 	name: string;
 	model: string;
-	photoURL: string;
+	photoUrl: string;
 	guaranteePeriod: number;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
@@ -29,7 +29,7 @@ const ProductLine = sequelize.define<ProductLineModel>(
 			allowNull: false,
 			type: DataTypes.STRING
 		},
-		photoURL: {
+		photoUrl: {
 			type: DataTypes.STRING
 		},
 		guaranteePeriod: {
@@ -44,7 +44,7 @@ const ProductLine = sequelize.define<ProductLineModel>(
 		}
 	},
 	{
-		tableName: 'product_line',
+		tableName: 'productline',
 		underscored: true
 	}
 );
