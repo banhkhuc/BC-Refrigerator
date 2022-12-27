@@ -5,6 +5,7 @@ export interface FacilityModel extends Model<InferAttributes<FacilityModel>, Inf
 	id: CreationOptional<number>;
 	name: string;
 	address: string;
+	imageUrl: string;
 	type: string;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
@@ -24,6 +25,9 @@ const Facility = sequelize.define<FacilityModel>(
 			type: DataTypes.STRING
 		},
 		address: {
+			type: DataTypes.STRING
+		},
+		imageUrl: {
 			type: DataTypes.STRING
 		},
 		type: {

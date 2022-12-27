@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { ProductLine } from 'databases/models';
 import ResponeCodes from 'utils/constants/ResponeCode';
-import ProductLines from './ProductLines';
+import ProductLinePayload from './ProductLines';
 import paginate from 'utils/helpers/pagination';
 import { Op } from 'sequelize';
 
@@ -9,12 +9,12 @@ const getProductLine = async (req: Request) => {
 	try {
 		const { query } = paginate(req);
 
-		const productLines  = await ProductLine.findAll({
+		const productLines = await ProductLine.findAll({
 			where: {
 				name: {
 					[Op.like]: `%${query}%`
 				}
-			},
+			}
 		});
 		return productLines;
 	} catch (error) {
@@ -63,8 +63,8 @@ const addProductLine = async (req: Request) => {
 		let message: string;
 		let status: number;
 
-		const newProductLines: ProductLines = req.body;
-		
+		const newProductLines: ProductLinePayload = req.body;
+
 		if (!newProductLines.name) {
 			data = null;
 			message = 'Name null.';
@@ -132,6 +132,4 @@ const updateProductLine = async (req: Request) => {
 	}
 };
 
-
-
-export { getProductLine, getProductLineById, addProductLine, updateProductLine};
+export { getProductLine, getProductLineById, addProductLine, updateProductLine };
