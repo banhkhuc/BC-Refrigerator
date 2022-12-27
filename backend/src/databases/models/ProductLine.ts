@@ -22,11 +22,11 @@ const ProductLine = sequelize.define<ProductLineModel>(
 			type: DataTypes.INTEGER
 		},
 		name: {
-			allowNull: false,
 			type: DataTypes.STRING
 		},
 		model: {
 			allowNull: false,
+			primaryKey: true,
 			type: DataTypes.STRING
 		},
 		photoUrl: {

@@ -1,10 +1,9 @@
 import bcrypt from 'bcrypt';
 import LoginPayLoad from './LoginPayload';
-import { Role, User, UserCode } from 'databases/models';
+import { User, UserCode } from 'databases/models';
 import ResponeCodes from 'utils/constants/ResponeCode';
 import { generateAccount, generateCode, generatePassword, generateToken } from 'utils/helpers/generate';
 import CreatePayload from './CreatePayload';
-import RoleCodes from 'utils/constants/RoleCode';
 import { sendForgotEmail, sendRegisterEmail, sendResetEmail } from 'utils/helpers/email';
 import ForgotPayLoad from './ForgotPayload';
 import sequelize from 'databases';
@@ -13,10 +12,6 @@ const verifyAccount = async (account: string) => {
 	const user = await User.findOne({
 		where: {
 			account
-		},
-		include: {
-			model: Role,
-			attributes: []
 		}
 	});
 	return user;
@@ -34,19 +29,18 @@ const verifyEmail = async (email: string) => {
 const createAccount = async (createData: CreatePayload) => {
 	const transaction = await sequelize.transaction();
 	try {
-		const { email, fullName, facility, role } = createData;
+		const { email, facility } = createData;
 		if (!email || !facility) {
 			return {
 				message: 'Invalid payload.',
 				status: ResponeCodes.BAD_REQUEST
 			};
 		} else {
-			const verify = await verifyEmail(createData.email);
+			const verify = await verifyEmail(email);
 			if (!verify) {
 				const password = generatePassword();
 				const hashPassword = bcrypt.hashSync(password, 10);
-				const idmx = (await User.max('id')) as number;
-				const account = generateAccount(idmx + 1);
+				const account = await generateAccount();
 
 				const user = await User.create(
 					{
@@ -56,8 +50,6 @@ const createAccount = async (createData: CreatePayload) => {
 					},
 					{ transaction }
 				);
-				const roleId = role ? role : RoleCodes.CUSTOMER;
-				await user.setRole(roleId, { transaction });
 				await user.setFacility(facility, { transaction });
 				await transaction.commit();
 				sendRegisterEmail(email, account, password);

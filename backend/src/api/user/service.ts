@@ -1,18 +1,18 @@
 import bcrypt from 'bcrypt';
 import { Request } from 'express';
-import { Role, User } from 'databases/models';
+import { Facility, User } from 'databases/models';
 import ResponeCodes from 'utils/constants/ResponeCode';
 import UserInfo from './UserInfo';
 import paginate from 'utils/helpers/pagination';
 import { Op } from 'sequelize';
-import RoleCodes from 'utils/constants/RoleCode';
 import { UserModel } from 'databases/models/User';
 
 const getUsers = async (req: Request) => {
 	try {
 		const { limit, offset, order, query } = paginate(req);
 
-		const roleId = (req.query.role as string) || RoleCodes.CUSTOMER;
+		const type = req.query.type as string;
+		const whereType = type ? { type } : {};
 
 		const users = await User.findAndCountAll({
 			where: {
@@ -30,11 +30,8 @@ const getUsers = async (req: Request) => {
 				]
 			},
 			include: {
-				model: Role,
-				where: {
-					id: roleId
-				},
-				attributes: []
+				model: Facility,
+				where: whereType
 			},
 			limit,
 			offset,
@@ -58,7 +55,9 @@ const getUserById = async (req: Request) => {
 			message = 'Invalid identifier.';
 			status = ResponeCodes.BAD_REQUEST;
 		} else {
-			const user = await User.findByPk(id);
+			const user = await User.findByPk(id, {
+				include: Facility
+			});
 			if (!user) {
 				message = 'User not found.';
 				status = ResponeCodes.NOT_FOUND;

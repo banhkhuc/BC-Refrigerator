@@ -49,7 +49,6 @@ const getAllFacilities = async (req: Request) => {
 		}
 		const facilities = await Facility.findAll({
 			where: whereFacility,
-			include: User
 		});
 		return facilities;
 	} catch (error) {
@@ -111,7 +110,7 @@ const addFacility = async (req: Request) => {
 		} else {
 			const [facility, created] = await Facility.findOrCreate({
 				where: {
-					name: newFacility.name
+					address: newFacility.address
 				},
 				defaults: {
 					...newFacility

@@ -2,10 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import { ApiResponse } from 'utils/rest/ApiResponse';
 import jwt from 'jsonwebtoken';
 import config from '../config';
-import RoleCodes from 'utils/constants/RoleCode';
 import ResponeCodes from 'utils/constants/ResponeCode';
 import User, { UserModel } from 'databases/models/User';
-import { Role } from 'databases/models';
+import { Facility } from 'databases/models';
+import FacilityType from 'utils/constants/FacilityType';
 
 interface IToken {
 	userId: number;
@@ -25,7 +25,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 		}
 
 		req.user = await User.findByPk(decoded.userId, {
-			include: Role
+			include: Facility
 		});
 
 		if (!req.user) {
@@ -37,22 +37,42 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 
 const verifyAdmin = async (req: Request, res: Response, next: NextFunction) => {
 	const user: UserModel = req.user;
-	const roleId = user.Role.id;
+	const facilityType = user.Facility.type;
 
-	if (roleId !== RoleCodes.ADMIN) {
+	if (facilityType !== FacilityType.ADMIN) {
 		return new ApiResponse(null, 'Not permission!', ResponeCodes.UNAUTHORIZED).send(res);
 	}
 	next();
 };
 
-const verifyCustomer = async (req: Request, res: Response, next: NextFunction) => {
+const verifyProduce = async (req: Request, res: Response, next: NextFunction) => {
 	const user: UserModel = req.user;
-	const roleId = user.Role.id;
+	const facilityType = user.Facility.type;
 
-	if (roleId !== RoleCodes.CUSTOMER) {
+	if (facilityType !== FacilityType.PRODUCE) {
 		return new ApiResponse(null, 'Not permission!', ResponeCodes.UNAUTHORIZED).send(res);
 	}
 	next();
 };
 
-export { verifyToken, verifyAdmin, verifyCustomer };
+const verifyDistribute = async (req: Request, res: Response, next: NextFunction) => {
+	const user: UserModel = req.user;
+	const facilityType = user.Facility.type;
+
+	if (facilityType !== FacilityType.DISTRIBUTE) {
+		return new ApiResponse(null, 'Not permission!', ResponeCodes.UNAUTHORIZED).send(res);
+	}
+	next();
+};
+
+const verifyGuarantee = async (req: Request, res: Response, next: NextFunction) => {
+	const user: UserModel = req.user;
+	const facilityType = user.Facility.type;
+
+	if (facilityType !== FacilityType.GUARANTEE) {
+		return new ApiResponse(null, 'Not permission!', ResponeCodes.UNAUTHORIZED).send(res);
+	}
+	next();
+};
+
+export { verifyToken, verifyAdmin, verifyProduce, verifyDistribute, verifyGuarantee };

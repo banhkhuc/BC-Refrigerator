@@ -25,6 +25,7 @@ const Facility = sequelize.define<FacilityModel>(
 			type: DataTypes.STRING
 		},
 		address: {
+			unique: true,
 			type: DataTypes.STRING
 		},
 		imageUrl: {

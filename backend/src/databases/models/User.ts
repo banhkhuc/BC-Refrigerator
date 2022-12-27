@@ -9,7 +9,6 @@ import {
 	NonAttribute
 } from 'sequelize';
 import sequelize from 'databases';
-import Role, { RoleModel } from './Role';
 import Facility, { FacilityModel } from './Facility';
 
 export interface UserModel extends Model<InferAttributes<UserModel>, InferCreationAttributes<UserModel>> {
@@ -21,9 +20,8 @@ export interface UserModel extends Model<InferAttributes<UserModel>, InferCreati
 	email: string;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
-	Role?: NonAttribute<RoleModel>;
+	Facility?: NonAttribute<FacilityModel>;
 
-	setRole: BelongsToSetAssociationMixin<RoleModel, RoleModel['id']>;
 	setFacility: BelongsToSetAssociationMixin<FacilityModel, FacilityModel['id']>;
 }
 
@@ -65,9 +63,6 @@ const User = sequelize.define<UserModel>(
 		underscored: true
 	}
 );
-
-Role.hasMany(User);
-User.belongsTo(Role);
 
 Facility.hasMany(User);
 User.belongsTo(Facility);
