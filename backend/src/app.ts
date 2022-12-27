@@ -10,6 +10,7 @@ import sequelize from 'databases';
 import 'databases/models';
 import router from 'api';
 import { UserModel } from 'databases/models/User';
+
 declare global {
 	namespace Express {
 		interface Request {

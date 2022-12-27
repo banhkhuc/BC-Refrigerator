@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/pagination', [verifyToken, verifyAdmin], getFacilities);
 router.get('/:id', [verifyToken, verifyAdmin], getFacility);
-router.get('/', [verifyToken, verifyAdmin], getAllFacilities);
+router.get('/', [verifyToken], getAllFacilities);
 router.post('/', [verifyToken, verifyAdmin], addFacility);
 router.delete('/:id', [verifyToken, verifyAdmin], deleteFacility);
 

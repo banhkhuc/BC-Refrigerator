@@ -8,7 +8,7 @@ const getFacilities = async (req: Request, res: Response) => {
 		const result = await service.getFacilities(req);
 		return new ApiResponse(result).send(res);
 	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't get nationalities.", ResponeCodes.ERROR).send(res);
+		return new ApiResponse(error.message, "Couldn't get facilities.", ResponeCodes.ERROR).send(res);
 	}
 };
 
@@ -17,7 +17,7 @@ const getAllFacilities = async (req: Request, res: Response) => {
 		const result = await service.getAllFacilities(req);
 		return new ApiResponse(result).send(res);
 	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't get nationalities.", ResponeCodes.ERROR).send(res);
+		return new ApiResponse(error.message, "Couldn't get facilities.", ResponeCodes.ERROR).send(res);
 	}
 };
 
@@ -27,7 +27,7 @@ const getFacility = async (req: Request, res: Response) => {
 		const { data, message, status } = result;
 		return new ApiResponse(data, message, status).send(res);
 	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't get nationality.", ResponeCodes.ERROR).send(res);
+		return new ApiResponse(error.message, "Couldn't get facility.", ResponeCodes.ERROR).send(res);
 	}
 };
 
@@ -37,7 +37,7 @@ const addFacility = async (req: Request, res: Response) => {
 		const { data, message, status } = result;
 		return new ApiResponse(data, message, status).send(res);
 	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't add nationality.", ResponeCodes.ERROR).send(res);
+		return new ApiResponse(error.message, "Couldn't add facility.", ResponeCodes.ERROR).send(res);
 	}
 };
 
@@ -47,7 +47,7 @@ const deleteFacility = async (req: Request, res: Response) => {
 		const { data, message, status } = result;
 		return new ApiResponse(data, message, status).send(res);
 	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't delete nationality.", ResponeCodes.ERROR).send(res);
+		return new ApiResponse(error.message, "Couldn't delete facility.", ResponeCodes.ERROR).send(res);
 	}
 };
 

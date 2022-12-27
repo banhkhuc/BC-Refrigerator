@@ -1,12 +1,16 @@
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from 'databases';
-import ProductLine from './ProductLine';
-import Facility from './Facility';
+import ProductLine, { ProductLineModel } from './ProductLine';
+import Facility, { FacilityModel } from './Facility';
 
 export interface ProductModel extends Model<InferAttributes<ProductModel>, InferCreationAttributes<ProductModel>> {
 	id: CreationOptional<number>;
-	mfg: CreationOptional<Date>;
-	distributeDate: CreationOptional<Date>;
+	code: string;
+	productLineModel: ForeignKey<ProductLineModel['model']>;
+	produceId: ForeignKey<FacilityModel['id']>;
+	mfg: Date;
+	distributeId: ForeignKey<FacilityModel['id']>;
+	distributeDate: Date;
 	status: string;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
@@ -21,9 +25,24 @@ const Product = sequelize.define<ProductModel>(
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
-		mfg: {
+		code: {
 			allowNull: false,
+			primaryKey: true,
+			type: DataTypes.STRING
+		},
+		productLineModel: {
+			allowNull: false,
+			type: DataTypes.STRING
+		},
+		produceId: {
+			allowNull: false,
+			type: DataTypes.INTEGER
+		},
+		mfg: {
 			type: DataTypes.DATE
+		},
+		distributeId: {
+			type: DataTypes.INTEGER
 		},
 		distributeDate: {
 			type: DataTypes.DATE
@@ -46,7 +65,10 @@ const Product = sequelize.define<ProductModel>(
 	}
 );
 
-ProductLine.hasMany(Product);
+ProductLine.hasMany(Product, {
+	sourceKey: 'model',
+	foreignKey: 'productLineModel'
+});
 Product.belongsTo(ProductLine);
 
 Facility.hasMany(Product, {

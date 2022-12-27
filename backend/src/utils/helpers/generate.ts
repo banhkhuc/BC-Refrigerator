@@ -1,9 +1,11 @@
 import config from 'config';
+import { Product, User } from 'databases/models';
 import jwt from 'jsonwebtoken';
 import { addTimeByMinute } from './timeService';
 
-const generateAccount = (id: number) => {
-	const idx = id.toString().padStart(6, '0');
+const generateAccount = async () => {
+	const idmx = await User.max('id');
+	const idx = idmx.toString().padStart(6, '0');
 	return 'BC' + idx;
 };
 
@@ -27,4 +29,13 @@ const generateToken = (userId: number) => {
 	return token;
 };
 
-export { generateAccount, generatePassword, generateCode, generateToken };
+const generateProductCode = async (productLineModel: string) => {
+	let idx: number = await Product.max('id', {
+		where: {
+			productLineModel
+		}
+	});
+	return productLineModel + `${idx++}`;
+};
+
+export { generateAccount, generatePassword, generateCode, generateToken, generateProductCode };
