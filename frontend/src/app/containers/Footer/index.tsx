@@ -1,25 +1,16 @@
-import {
-  Divider,
-} from '@mui/material';
+import { Divider } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import useStyles from './styles';
-import {
-  YouTube,
-  Facebook,
-  Twitter
-} from '@mui/icons-material';
+import { YouTube, Facebook, Twitter } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import paths from 'paths';
 
 export default function Footer() {
-
   const year = new Date().getFullYear();
-
-  const classes = useStyles();
 
   return (
     <div>
-      <Divider variant='middle' />
+      footer
+      {/* <Divider variant='middle' />
       <footer className={classes.footer}>
         <Grid container columnSpacing={1}>
           <Grid xs={4} md={2}>
@@ -123,7 +114,7 @@ export default function Footer() {
             </Grid>
           </Grid>
         </Grid>
-      </footer>
-    </div >
-  )
+      </footer> */}
+    </div>
+  );
 }

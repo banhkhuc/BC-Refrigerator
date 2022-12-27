@@ -1,30 +1,30 @@
-import { createTheme } from '@mui/material/styles';
+import { extendTheme } from '@chakra-ui/react';
 
-const theme = createTheme({
-  palette: {
+const theme = extendTheme({
+  fonts: {
+    heading: `'Be Vietnam Pro', sans-serif`,
+    body: `'Be Vietnam Pro', sans-serif`,
+  },
+  colors: {
     primary: {
-      main: '#FF884B',
-      dark: '#DC5800',
-      light: '#FF884BAA',
+      100: '#F48004',
+      200: '#F48004',
+      300: '#F48004',
+      400: '#F48004',
+      500: '#F48004',
+      600: '#F48004',
+      700: '#F48004',
+      800: '#F48004',
+      900: '#F48004',
     },
-    secondary: {
-      main: '#1D1C1A',
-    },
-    info: {
-      main: '#3498DB',
-    },
-    success: {
-      main: '#07BC0C',
-    },
-    warning: {
-      main: '#F1C40F',
-    },
-    error: {
-      main: '#E74C3C',
-    },
-    text: {
-      primary: '#1D1C1A',
-    },
+    text: '#74767a',
+    hoverColor: 'rgba(255, 255, 255, 0.1)',
+    primaryBorderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  fontSizes: {
+    xs: '0.7rem',
+    md: '1rem',
+    xl: '1.5rem',
   },
 });
 
