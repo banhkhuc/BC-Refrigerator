@@ -1,17 +1,19 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from 'databases';
+import Product from './Product';
 
-export interface UserCodeModel extends Model<InferAttributes<UserCodeModel>, InferCreationAttributes<UserCodeModel>> {
+export interface OrderModel extends Model<InferAttributes<OrderModel>, InferCreationAttributes<OrderModel>> {
 	id: CreationOptional<number>;
-	account: string;
-	code: string;
-	expires: Date;
+	orderName: string;
+	orderPhone: string;
+	orderAddress: string;
+	orderDate: Date;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
 }
 
-const UserCode = sequelize.define<UserCodeModel>(
-	'UserCode',
+const Order = sequelize.define<OrderModel>(
+	'Order',
 	{
 		id: {
 			allowNull: false,
@@ -19,15 +21,17 @@ const UserCode = sequelize.define<UserCodeModel>(
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
-		account: {
+		orderName: {
 			allowNull: false,
 			type: DataTypes.STRING
 		},
-		code: {
-			allowNull: false,
+		orderPhone: {
 			type: DataTypes.STRING
 		},
-		expires: {
+		orderAddress: {
+			type: DataTypes.STRING
+		},
+		orderDate: {
 			allowNull: false,
 			type: DataTypes.DATE
 		},
@@ -39,9 +43,12 @@ const UserCode = sequelize.define<UserCodeModel>(
 		}
 	},
 	{
-		tableName: 'user_code',
+		tableName: 'order',
 		underscored: true
 	}
 );
 
-export default UserCode;
+Product.hasOne(Order);
+Order.belongsTo(Product);
+
+export default Order;

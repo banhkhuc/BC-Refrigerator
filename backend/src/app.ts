@@ -42,11 +42,11 @@ const init = async () => {
 
 	app.use('/api', router);
 
-	app.use(express.static('build'));
+	// app.use(express.static('build'));
 
-	app.get('/*', function (req, res) {
-		res.sendFile('build/index.html', { root: '.' });
-	});
+	// app.get('/*', function (req, res) {
+	// 	res.sendFile('build/index.html', { root: '.' });
+	// });
 };
 
 init();

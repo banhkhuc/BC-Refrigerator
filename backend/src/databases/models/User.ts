@@ -1,29 +1,30 @@
 import bcrypt from 'bcrypt';
 import {
+	BelongsToSetAssociationMixin,
 	CreationOptional,
 	DataTypes,
 	InferAttributes,
 	InferCreationAttributes,
 	Model,
-	HasManyGetAssociationsMixin,
-	NonAttribute,
-	HasManySetAssociationsMixin
+	NonAttribute
 } from 'sequelize';
 import sequelize from 'databases';
-import { RoleModel } from './Role';
+import Role, { RoleModel } from './Role';
+import Facility, { FacilityModel } from './Facility';
+
 export interface UserModel extends Model<InferAttributes<UserModel>, InferCreationAttributes<UserModel>> {
 	// Some fields are optional when calling UserModel.create() or UserModel.build(	)
 	id: CreationOptional<number>;
-	email: string;
+	account: string;
 	password: string;
 	fullName: string;
-	phone: string;
-	birthDay: Date;
+	email: string;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
+	Role?: NonAttribute<RoleModel>;
 
-	Roles?: NonAttribute<RoleModel[]>;
-	setRoles: HasManySetAssociationsMixin<RoleModel, RoleModel['id']>;
+	setRole: BelongsToSetAssociationMixin<RoleModel, RoleModel['id']>;
+	setFacility: BelongsToSetAssociationMixin<FacilityModel, FacilityModel['id']>;
 }
 
 const User = sequelize.define<UserModel>(
@@ -35,7 +36,7 @@ const User = sequelize.define<UserModel>(
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
-		email: {
+		account: {
 			allowNull: false,
 			unique: true,
 			type: DataTypes.STRING
@@ -47,11 +48,10 @@ const User = sequelize.define<UserModel>(
 		fullName: {
 			type: DataTypes.STRING
 		},
-		phone: {
+		email: {
+			allowNull: false,
+			unique: true,
 			type: DataTypes.STRING
-		},
-		birthDay: {
-			type: DataTypes.DATEONLY
 		},
 		createdAt: {
 			type: DataTypes.DATE
@@ -66,9 +66,10 @@ const User = sequelize.define<UserModel>(
 	}
 );
 
-User.beforeCreate(user => {
-	const hashedPassword = bcrypt.hashSync(user.password, 10);
-	user.password = hashedPassword;
-});
+Role.hasMany(User);
+User.belongsTo(Role);
+
+Facility.hasMany(User);
+User.belongsTo(Facility);
 
 export default User;

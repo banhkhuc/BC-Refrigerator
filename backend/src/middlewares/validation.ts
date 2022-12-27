@@ -9,8 +9,6 @@ import { Role } from 'databases/models';
 
 interface IToken {
 	userId: number;
-	userEmail: string;
-	roleIds: number[];
 }
 
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
@@ -25,16 +23,11 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 		if (err) {
 			return new ApiResponse(err, 'Unauthorized!', ResponeCodes.UNAUTHORIZED).send(res);
 		}
+
 		req.user = await User.findByPk(decoded.userId, {
-			include: [
-				{
-					model: Role,
-					through: {
-						attributes: []
-					}
-				}
-			]
+			include: Role
 		});
+
 		if (!req.user) {
 			return new ApiResponse(err, 'Unauthorized!', ResponeCodes.UNAUTHORIZED).send(res);
 		}
@@ -44,9 +37,9 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 
 const verifyAdmin = async (req: Request, res: Response, next: NextFunction) => {
 	const user: UserModel = req.user;
-	const roleIds = user.Roles.map(role => role.id);
+	const roleId = user.Role.id;
 
-	if (!roleIds.includes(RoleCodes.ADMIN)) {
+	if (roleId !== RoleCodes.ADMIN) {
 		return new ApiResponse(null, 'Not permission!', ResponeCodes.UNAUTHORIZED).send(res);
 	}
 	next();
@@ -54,9 +47,9 @@ const verifyAdmin = async (req: Request, res: Response, next: NextFunction) => {
 
 const verifyCustomer = async (req: Request, res: Response, next: NextFunction) => {
 	const user: UserModel = req.user;
-	const roleIds = user.Roles.map(role => role.id);
+	const roleId = user.Role.id;
 
-	if (!roleIds.includes(RoleCodes.CUSTOMER)) {
+	if (roleId !== RoleCodes.CUSTOMER) {
 		return new ApiResponse(null, 'Not permission!', ResponeCodes.UNAUTHORIZED).send(res);
 	}
 	next();

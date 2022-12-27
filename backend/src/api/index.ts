@@ -1,16 +1,14 @@
 import { Router } from 'express';
-import loginRouter from './login';
-import registerRouter from './register';
-import forgotRouter from './forgot';
 import userRouter from './user';
-import nationalityRouter from './nationality';
+import accountRouter from './account';
+import productlineRouter from './productLine';
+import facilityRouter from './facility';
+
 const router = Router();
 
-router.use('/login', loginRouter);
-router.use('/register', registerRouter);
-router.use('/forgot', forgotRouter);
 router.use('/users', userRouter);
-router.use('/nationalities', nationalityRouter);
-
+router.use('/accounts', accountRouter);
+router.use('/productlines', productlineRouter);
+router.use('/facilities', facilityRouter);
 
 export default router;

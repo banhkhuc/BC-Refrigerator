@@ -1,30 +1,28 @@
 import { Request } from 'express';
-import { Nationality } from 'databases/models';
+import { ProductLine } from 'databases/models';
 import ResponeCodes from 'utils/constants/ResponeCode';
-import NationalityPayload from './NationalityPayload';
+import ProductLinePayload from './ProductLines';
 import paginate from 'utils/helpers/pagination';
 import { Op } from 'sequelize';
 
-const getNationalities = async (req: Request) => {
+const getProductLine = async (req: Request) => {
 	try {
-		const { order, query } = paginate(req);
+		const { query } = paginate(req);
 
-		const nationalities = await Nationality.findAll({
+		const productLines = await ProductLine.findAll({
 			where: {
 				name: {
 					[Op.like]: `%${query}%`
 				}
-			},
-			order: [order]
+			}
 		});
-
-		return nationalities;
+		return productLines;
 	} catch (error) {
 		throw error;
 	}
 };
 
-const getNationalityById = async (req: Request) => {
+const getProductLineById = async (req: Request) => {
 	try {
 		let data;
 		let message: string;
@@ -37,13 +35,13 @@ const getNationalityById = async (req: Request) => {
 			message = 'Invalid identifier.';
 			status = ResponeCodes.BAD_REQUEST;
 		} else {
-			const nationlity = await Nationality.findByPk(id);
-			if (!nationlity) {
+			const productLine = await ProductLine.findByPk(id);
+			if (!productLine) {
 				data = null;
 				message = 'Not found.';
 				status = ResponeCodes.NOT_FOUND;
 			} else {
-				data = nationlity;
+				data = productLine;
 				message = 'Get successfully!';
 				status = ResponeCodes.OK;
 			}
@@ -59,39 +57,38 @@ const getNationalityById = async (req: Request) => {
 	}
 };
 
-const addNationality = async (req: Request) => {
+const addProductLine = async (req: Request) => {
 	try {
 		let data;
 		let message: string;
 		let status: number;
 
-		const newNationality: NationalityPayload = req.body;
+		const newProductLines: ProductLinePayload = req.body;
 
-		if (!newNationality.name) {
+		if (!newProductLines.name) {
 			data = null;
 			message = 'Name null.';
 			status = ResponeCodes.BAD_REQUEST;
 		} else {
-			const [nationlity, created] = await Nationality.findOrCreate({
+			const [productline, created] = await ProductLine.findOrCreate({
 				where: {
-					name: newNationality.name
+					name: newProductLines.name
 				},
 				defaults: {
-					...newNationality
+					...newProductLines
 				}
 			});
 
 			if (created) {
-				data = nationlity;
+				data = productline;
 				message = 'Add successfully!';
 				status = ResponeCodes.CREATED;
 			} else {
 				data = null;
-				message = 'Nationality exists.';
+				message = 'productline exists.';
 				status = ResponeCodes.OK;
 			}
 		}
-
 		return {
 			data,
 			message,
@@ -102,7 +99,7 @@ const addNationality = async (req: Request) => {
 	}
 };
 
-const updateNationality = async (req: Request) => {
+const updateProductLine = async (req: Request) => {
 	try {
 		let data;
 		let message: string;
@@ -115,8 +112,8 @@ const updateNationality = async (req: Request) => {
 			message = 'Invalid identifier.';
 			status = ResponeCodes.BAD_REQUEST;
 		} else {
-			const updateNationality = req.body;
-			data = await Nationality.update(updateNationality, {
+			const updateProductLine = req.body;
+			data = await ProductLine.update(updateProductLine, {
 				where: {
 					id
 				}
@@ -135,36 +132,4 @@ const updateNationality = async (req: Request) => {
 	}
 };
 
-const deleteNationality = async (req: Request) => {
-	try {
-		let data;
-		let message: string;
-		let status: number;
-
-		const id = parseInt(req.params.id);
-
-		if (isNaN(id)) {
-			data = null;
-			message = 'Invalid identifier.';
-			status = ResponeCodes.BAD_REQUEST;
-		} else {
-			data = await Nationality.destroy({
-				where: {
-					id
-				}
-			});
-			message = 'Deleted successfully!';
-			status = ResponeCodes.OK;
-		}
-
-		return {
-			data,
-			message,
-			status
-		};
-	} catch (error) {
-		throw error;
-	}
-};
-
-export { getNationalities, getNationalityById, addNationality, updateNationality, deleteNationality };
+export { getProductLine, getProductLineById, addProductLine, updateProductLine };

@@ -2,11 +2,9 @@ import bcrypt from 'bcrypt';
 import { Request } from 'express';
 import { Role, User } from 'databases/models';
 import ResponeCodes from 'utils/constants/ResponeCode';
-import UserPayload from './UserPayload';
 import UserInfo from './UserInfo';
 import paginate from 'utils/helpers/pagination';
 import { Op } from 'sequelize';
-import sequelize from 'databases';
 import RoleCodes from 'utils/constants/RoleCode';
 import { UserModel } from 'databases/models/User';
 
@@ -50,20 +48,18 @@ const getUsers = async (req: Request) => {
 
 const getUserById = async (req: Request) => {
 	try {
-		let data: UserModel | null;
+		let data: UserModel;
 		let message: string;
 		let status: number;
 
 		const id = parseInt(req.params.id);
 
 		if (isNaN(id)) {
-			data = null;
 			message = 'Invalid identifier.';
 			status = ResponeCodes.BAD_REQUEST;
 		} else {
 			const user = await User.findByPk(id);
 			if (!user) {
-				data = null;
 				message = 'User not found.';
 				status = ResponeCodes.NOT_FOUND;
 			} else {
@@ -83,57 +79,9 @@ const getUserById = async (req: Request) => {
 	}
 };
 
-const addUser = async (req: Request) => {
-	try {
-		let data;
-		let message: string;
-		let status: number;
-
-		const newUser: UserPayload = req.body;
-
-		const { email, password, roles } = newUser;
-		if (!email || !password) {
-			data = null;
-			message = 'Email or password null.';
-			status = ResponeCodes.BAD_REQUEST;
-		} else {
-			const transaction = await sequelize.transaction(async t => {
-				const [user, created] = await User.findOrCreate({
-					where: {
-						email
-					},
-					defaults: {
-						...newUser
-					},
-					transaction: t
-				});
-
-				if (created) {
-					await user.setRoles(roles, { transaction: t });
-					data = user;
-					message = 'Add user successfully!';
-					status = ResponeCodes.CREATED;
-				} else {
-					data = null;
-					message = 'Email exists.';
-					status = ResponeCodes.OK;
-				}
-			});
-		}
-
-		return {
-			data,
-			message,
-			status
-		};
-	} catch (error) {
-		throw error;
-	}
-};
-
 const getMe = async (req: Request) => {
 	try {
-		let data;
+		let data: UserModel;
 		let message: string;
 		let status: number;
 
@@ -162,11 +110,10 @@ const changeInfo = async (req: Request) => {
 		const user = req.user;
 		const info: UserInfo = req.body;
 
-		data = await user.update({
-			fullName: info.fullName,
-			phone: info.phone,
-			birthDay: info.birthDay
+		await user.update({
+			fullName: info.fullName
 		});
+
 		message = 'Update user successfully!';
 		status = ResponeCodes.OK;
 
@@ -266,11 +213,10 @@ const deleteUser = async (req: Request) => {
 		const id = parseInt(req.params.id);
 
 		if (isNaN(id)) {
-			data = null;
 			message = 'Invalid user identifier.';
 			status = ResponeCodes.BAD_REQUEST;
 		} else {
-			data = await User.destroy({
+			await User.destroy({
 				where: {
 					id
 				}
@@ -289,14 +235,4 @@ const deleteUser = async (req: Request) => {
 	}
 };
 
-export {
-	getUsers,
-	getUserById,
-	addUser,
-	deleteUser,
-	changeInfo,
-	changePassword,
-	verifyPassword,
-	checkNewPassword,
-	getMe
-};
+export { getUsers, getUserById, deleteUser, changeInfo, changePassword, verifyPassword, checkNewPassword, getMe };

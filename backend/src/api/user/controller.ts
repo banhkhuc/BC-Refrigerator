@@ -24,17 +24,6 @@ const getUser = async (req: Request, res: Response) => {
 	}
 };
 
-// POST: /users
-const addUser = async (req: Request, res: Response) => {
-	try {
-		const result = await service.addUser(req);
-		const { data, message, status } = result;
-		return new ApiResponse(data, message, status).send(res);
-	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't add user.", ResponeCodes.ERROR).send(res);
-	}
-};
-
 // GET: /users/me
 const getMe = async (req: Request, res: Response) => {
 	try {
@@ -94,4 +83,4 @@ const deleteUser = async (req: Request, res: Response) => {
 	}
 };
 
-export { getUsers, getUser, addUser, deleteUser, changeInfo, changePassword, verifyPassword, getMe };
+export { getUsers, getUser, deleteUser, changeInfo, changePassword, verifyPassword, getMe };

@@ -1,15 +1,18 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from 'databases';
 
-export interface RoleModel extends Model<InferAttributes<RoleModel>, InferCreationAttributes<RoleModel>> {
+export interface FacilityModel extends Model<InferAttributes<FacilityModel>, InferCreationAttributes<FacilityModel>> {
 	id: CreationOptional<number>;
 	name: string;
+	address: string;
+	imageUrl: string;
+	type: string;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
 }
 
-const Role = sequelize.define<RoleModel>(
-	'Role',
+const Facility = sequelize.define<FacilityModel>(
+	'Facility',
 	{
 		id: {
 			allowNull: false,
@@ -19,7 +22,16 @@ const Role = sequelize.define<RoleModel>(
 		},
 		name: {
 			allowNull: false,
-			unique: true,
+			type: DataTypes.STRING
+		},
+		address: {
+			type: DataTypes.STRING
+		},
+		imageUrl: {
+			type: DataTypes.STRING
+		},
+		type: {
+			allowNull: false,
 			type: DataTypes.STRING
 		},
 		createdAt: {
@@ -30,9 +42,9 @@ const Role = sequelize.define<RoleModel>(
 		}
 	},
 	{
-		tableName: 'role',
+		tableName: 'facility',
 		underscored: true
 	}
 );
 
-export default Role;
+export default Facility;

@@ -1,9 +1,8 @@
 interface RegisterPayLoad {
 	email: string;
-	password: string;
 	fullName?: string;
-	phone?: string;
-	birthDay?: Date;
+	role?: number;
+	facility: number;
 }
 
 export default RegisterPayLoad;
