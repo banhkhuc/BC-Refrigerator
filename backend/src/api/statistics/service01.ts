@@ -5,7 +5,7 @@ import FacilityType from 'utils/constants/FacilityType';
 import paginate from 'utils/helpers/pagination';
 import { Op } from 'sequelize';
 
-const getStatisticsDacilityById = async (req: Request) => {
+const getStatisticsDacilityProductLineById = async (req: Request) => {
 	try {
 		let data;
 		let message: string;
@@ -13,14 +13,16 @@ const getStatisticsDacilityById = async (req: Request) => {
 
 
 		const id = parseInt(req.params.id);
-		if (isNaN(id)) {
+		const product_line_model  =  req.params.slug;
+		if (isNaN(id) || product_line_model == null) {
 			data = null;
 			message = 'Invalid identifier.';
 			status = ResponeCodes.BAD_REQUEST;
 		} else {
 			let statistic = await Statistics.findAll({
 				where:{
-					facilityId: id
+					facilityId: id,
+					productLineModel: product_line_model
 				},
 				order: [['createdAt', 'DESC']],
 			});
@@ -66,13 +68,17 @@ const getStatisticsDacilityById = async (req: Request) => {
 	}
 };
 
-const getStatisticsProduce = async (req: Request) => {
+const getStatisticsProduceProductLineById = async (req: Request) => {
 	try {
 		let data;
 		let message: string;
 		let status: number;
-		
+
+		const product_line_model  =  req.params.slug; 
 		let tk = await Statistics.findAll({
+			where:{
+				productLineModel: product_line_model
+			},
 			order: [['createdAt', 'DESC']],
 		});
 		let statistic = [];
@@ -120,13 +126,17 @@ const getStatisticsProduce = async (req: Request) => {
 	}
 };
 
-const getStatisticsDistribute = async (req: Request) => {
+const getStatisticsDistributeProductLineById = async (req: Request) => {
 	try {
 		let data;
 		let message: string;
 		let status: number;
 		
+		const product_line_model  =  req.params.slug; 
 		let tk = await Statistics.findAll({
+			where:{
+				productLineModel: product_line_model
+			},
 			order: [['createdAt', 'DESC']],
 		});
 		let statistic = [];
@@ -174,13 +184,17 @@ const getStatisticsDistribute = async (req: Request) => {
 	}
 };
 
-const getStatisticsguarantee = async (req: Request) => {
+const getStatisticsguaranteeProductLineById = async (req: Request) => {
 	try {
 		let data;
 		let message: string;
 		let status: number;
 		
+		const product_line_model  =  req.params.slug; 
 		let tk = await Statistics.findAll({
+			where:{
+				productLineModel: product_line_model
+			},
 			order: [['createdAt', 'DESC']],
 		});
 		let statistic = [];
@@ -228,4 +242,4 @@ const getStatisticsguarantee = async (req: Request) => {
 	}
 };
 
-export { getStatisticsDacilityById, getStatisticsProduce, getStatisticsDistribute, getStatisticsguarantee};
+export { getStatisticsDacilityProductLineById, getStatisticsProduceProductLineById, getStatisticsDistributeProductLineById, getStatisticsguaranteeProductLineById};
