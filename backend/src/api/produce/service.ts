@@ -126,7 +126,8 @@ const importProduct = async (req: Request) => {
 			let s = await Statistics.findOne({ where: { time: t, facilityId : produceId, productLineModel: product.productLineModel} });
 			if(s == null){ 
 				let statistic = await Statistics.findAll({ where: { facilityId : produceId, productLineModel: product.productLineModel  }, order: [['createdAt', 'DESC']],});
-				let wh = statistic[0].warehouse + 1;
+				let wh = 1;
+				if(statistic[0] != null ) wh = statistic[0].warehouse + 1; 
 				let new_statistic = await Statistics.create({time: t, warehouse: wh, work: 1, facilityId : produceId, productLineModel : product.productLineModel } );
 			}
 			else{
@@ -179,7 +180,6 @@ const exportProduct = async (req: Request) => {
 					);
 				})
 			);
-
 			message = 'Export successfully!';
 			status = ResponeCodes.OK;
 		}
