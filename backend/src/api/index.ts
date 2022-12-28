@@ -15,5 +15,5 @@ router.use('/productline', productlineRouter);
 router.use('/facilitiy', facilityRouter);
 router.use('/produce', produceRouter);
 router.use('/distribute', distributeRouter);
-
+router.use('/statistics', statisticsRouter);
 export default router;

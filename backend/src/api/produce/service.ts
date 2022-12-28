@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import ResponeCodes from 'utils/constants/ResponeCode';
 import paginate from 'utils/helpers/pagination';
-import { Product, ProductLine } from 'databases/models';
+import { Product, ProductLine, Statistics } from 'databases/models';
 import { ProductModel } from 'databases/models/Product';
 import ProductStatus from 'utils/constants/ProductStatus';
 import ImportPayLoad from './ImportPayload';
@@ -194,4 +194,4 @@ const exportProduct = async (req: Request) => {
 	}
 };
 
-export { getProducts, getProductById, importProduct, exportProduct };
+export { getProducts, getProductById, importProduct, exportProduct};

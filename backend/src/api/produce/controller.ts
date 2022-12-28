@@ -51,5 +51,4 @@ const exportProduct = async (req: Request, res: Response) => {
 	}
 };
 
-
 export { getProducts, getErrorProducts, getProduct, importProduct, exportProduct };
