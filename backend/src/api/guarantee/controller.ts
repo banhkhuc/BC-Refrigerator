@@ -22,34 +22,24 @@ const getProduct = async (req: Request, res: Response) => {
 	}
 };
 
-const importProduct = async (req: Request, res: Response) => {
+const exportDistribute = async (req: Request, res: Response) => {
 	try {
-		const result = await service.importProduct(req);
+		const result = await service.exportDistribute(req);
 		const { data, message, status } = result;
 		return new ApiResponse(data, message, status).send(res);
 	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't import product.", ResponeCodes.ERROR).send(res);
+		return new ApiResponse(error.message, "Couldn't export distribute.", ResponeCodes.ERROR).send(res);
 	}
 };
 
-const exportOrder = async (req: Request, res: Response) => {
+const exportProduce = async (req: Request, res: Response) => {
 	try {
-		const result = await service.exportOrder(req);
+		const result = await service.exportProduce(req);
 		const { data, message, status } = result;
 		return new ApiResponse(data, message, status).send(res);
 	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't export product.", ResponeCodes.ERROR).send(res);
+		return new ApiResponse(error.message, "Couldn't export produce.", ResponeCodes.ERROR).send(res);
 	}
 };
 
-const exportGuarantee = async (req: Request, res: Response) => {
-	try {
-		const result = await service.exportGuarantee(req);
-		const { data, message, status } = result;
-		return new ApiResponse(data, message, status).send(res);
-	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't export product.", ResponeCodes.ERROR).send(res);
-	}
-};
-
-export { getProducts, getProduct, importProduct, exportOrder, exportGuarantee };
+export { getProducts, getProduct, exportDistribute, exportProduce };

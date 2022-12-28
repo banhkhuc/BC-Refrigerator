@@ -1,12 +1,13 @@
 import { Request } from 'express';
 import ResponeCodes from 'utils/constants/ResponeCode';
 import paginate from 'utils/helpers/pagination';
-import { Product, ProductLine } from 'databases/models';
+import { Facility, Product, ProductLine } from 'databases/models';
 import { ProductModel } from 'databases/models/Product';
 import ProductStatus from 'utils/constants/ProductStatus';
 import ImportPayLoad from './ImportPayload';
 import ExportPayload from './ExportPayload';
 import { generateProductCode } from 'utils/helpers/generate';
+import FacilityType from 'utils/constants/FacilityType';
 
 const getProducts = async (req: Request) => {
 	try {
@@ -112,26 +113,32 @@ const exportProduct = async (req: Request) => {
 			message = 'Invalid payload.';
 			status = ResponeCodes.BAD_REQUEST;
 		} else {
-			await Promise.all(
-				products.map(async productCode => {
-					Product.update(
-						{
-							distributeId,
-							distributeDate,
-							status: ProductStatus.INSTOCK
-						},
-						{
-							where: {
-								code: productCode,
-								status: ProductStatus.PRODUCED
+			const distribute = await Facility.findByPk(distributeId);
+			if (distribute.type !== FacilityType.DISTRIBUTE) {
+				message = 'Invalid distribute.';
+				status = ResponeCodes.BAD_REQUEST;
+			} else {
+				await Promise.all(
+					products.map(async productCode => {
+						Product.update(
+							{
+								distributeId,
+								distributeDate,
+								status: ProductStatus.INSTOCK
+							},
+							{
+								where: {
+									code: productCode,
+									status: ProductStatus.PRODUCED
+								}
 							}
-						}
-					);
-				})
-			);
+						);
+					})
+				);
 
-			message = 'Export successfully!';
-			status = ResponeCodes.OK;
+				message = 'Export successfully!';
+				status = ResponeCodes.OK;
+			}
 		}
 
 		return {
