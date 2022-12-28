@@ -5,7 +5,7 @@ import productlineRouter from './productLine';
 import facilityRouter from './facility';
 import produceRouter from './produce';
 import distributeRouter from './distribute';
-
+import statisticsRouter from './statistics';
 const router = Router();
 
 router.use('/user', userRouter);
@@ -14,5 +14,5 @@ router.use('/productline', productlineRouter);
 router.use('/facilitiy', facilityRouter);
 router.use('/produce', produceRouter);
 router.use('/distribute', distributeRouter);
-
+router.use('/statistics', statisticsRouter);
 export default router;

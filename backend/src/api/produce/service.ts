@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import ResponeCodes from 'utils/constants/ResponeCode';
 import paginate from 'utils/helpers/pagination';
-import { Product, ProductLine } from 'databases/models';
+import { Product, ProductLine, Statistics } from 'databases/models';
 import { ProductModel } from 'databases/models/Product';
 import ProductStatus from 'utils/constants/ProductStatus';
 import ImportPayLoad from './ImportPayload';
@@ -71,8 +71,8 @@ const importProduct = async (req: Request) => {
 		let status: number;
 
 		const importData: ImportPayLoad = req.body;
-		const produceId = req.user.Facility.id;
 
+		const produceId = req.user.Facility.id;
 		if (!importData.productLineModel) {
 			message = 'Invalid payload.';
 			status = ResponeCodes.BAD_REQUEST;
@@ -85,10 +85,31 @@ const importProduct = async (req: Request) => {
 				status: ProductStatus.PRODUCED
 			});
 			data = product;
+
+			let month = product.createdAt.getMonth() + 1;
+			let t;
+			if(month < 10){
+				t = product.createdAt.getFullYear()+"/"+"0" + month;
+			} 
+			else{
+				t = product.createdAt.getFullYear()+"/"+ month;
+			}
+			let s = await Statistics.findOne({ where: { time: t, facilityId : produceId, productLineModel: product.productLineModel} });
+			if(s == null){ 
+				let statistic = await Statistics.findAll({ where: { facilityId : produceId, productLineModel: product.productLineModel  }, order: [['createdAt', 'DESC']],});
+				let wh = statistic[0].warehouse + 1;
+				let new_statistic = await Statistics.create({time: t, warehouse: wh, work: 1, facilityId : produceId, productLineModel : product.productLineModel } );
+			}
+			else{
+				s.warehouse++;
+				s.work++;
+				await s.save();
+			}
+
 			message = 'Import successfully!';
 			status = ResponeCodes.CREATED;
 		}
-
+		
 		return {
 			data,
 			message,
@@ -129,7 +150,6 @@ const exportProduct = async (req: Request) => {
 					);
 				})
 			);
-
 			message = 'Export successfully!';
 			status = ResponeCodes.OK;
 		}
@@ -144,4 +164,4 @@ const exportProduct = async (req: Request) => {
 	}
 };
 
-export { getProducts, getProductById, importProduct, exportProduct };
+export { getProducts, getProductById, importProduct, exportProduct};
