@@ -26,7 +26,7 @@ const ProductLine = sequelize.define<ProductLineModel>(
 		},
 		model: {
 			allowNull: false,
-			primaryKey: true,
+			unique: true,
 			type: DataTypes.STRING
 		},
 		photoUrl: {

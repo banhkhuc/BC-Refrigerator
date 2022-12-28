@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 import { addTimeByMinute } from './timeService';
 
 const generateAccount = async () => {
-	const idmx = await User.max('id');
-	const idx = idmx.toString().padStart(6, '0');
+	let idmx: number = (await User.max('id')) || 0;
+	const idx = (++idmx).toString().padStart(6, '0');
 	return 'BC' + idx;
 };
 
@@ -35,7 +35,7 @@ const generateProductCode = async (productLineModel: string) => {
 			productLineModel
 		}
 	});
-	return productLineModel + `${idx++}`;
+	return productLineModel + `-${++idx}`;
 };
 
 export { generateAccount, generatePassword, generateCode, generateToken, generateProductCode };

@@ -1,9 +1,13 @@
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from 'databases';
-import Product from './Product';
+import Product, { ProductModel } from './Product';
+import Facility, { FacilityModel } from './Facility';
+import ProductStatus from 'utils/constants/ProductStatus';
 
 export interface OrderModel extends Model<InferAttributes<OrderModel>, InferCreationAttributes<OrderModel>> {
 	id: CreationOptional<number>;
+	productCode: ForeignKey<ProductModel['code']>;
+	distributeId: ForeignKey<FacilityModel['id']>;
 	orderName: string;
 	orderPhone: string;
 	orderAddress: string;
@@ -21,6 +25,17 @@ const Order = sequelize.define<OrderModel>(
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
+		productCode: {
+			allowNull: false,
+			type: DataTypes.STRING
+		},
+		distributeId: {
+			allowNull: false,
+			type: DataTypes.INTEGER
+		},
+		orderDate: {
+			type: DataTypes.DATE
+		},
 		orderName: {
 			allowNull: false,
 			type: DataTypes.STRING
@@ -30,10 +45,6 @@ const Order = sequelize.define<OrderModel>(
 		},
 		orderAddress: {
 			type: DataTypes.STRING
-		},
-		orderDate: {
-			allowNull: false,
-			type: DataTypes.DATE
 		},
 		createdAt: {
 			type: DataTypes.DATE
@@ -48,7 +59,22 @@ const Order = sequelize.define<OrderModel>(
 	}
 );
 
-Product.hasOne(Order);
-Order.belongsTo(Product);
+Product.hasOne(Order, {
+	sourceKey: 'code',
+	foreignKey: 'productCode'
+});
+
+Order.belongsTo(Product, {
+	targetKey: 'code',
+	foreignKey: 'productCode'
+});
+
+Facility.hasOne(Order, {
+	foreignKey: 'distributeId'
+});
+
+Order.belongsTo(Facility, {
+	foreignKey: 'distributeId'
+});
 
 export default Order;
