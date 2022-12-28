@@ -27,7 +27,7 @@ const Product = sequelize.define<ProductModel>(
 		},
 		code: {
 			allowNull: false,
-			primaryKey: true,
+			unique: true,
 			type: DataTypes.STRING
 		},
 		productLineModel: {
@@ -69,7 +69,11 @@ ProductLine.hasMany(Product, {
 	sourceKey: 'model',
 	foreignKey: 'productLineModel'
 });
-Product.belongsTo(ProductLine);
+
+Product.belongsTo(ProductLine, {
+	targetKey: 'model',
+	foreignKey: 'productLineModel'
+});
 
 Facility.hasMany(Product, {
 	foreignKey: 'produceId'

@@ -122,7 +122,8 @@ const exportProduct = async (req: Request) => {
 						},
 						{
 							where: {
-								code: productCode
+								code: productCode,
+								status: ProductStatus.PRODUCED
 							}
 						}
 					);
@@ -130,7 +131,7 @@ const exportProduct = async (req: Request) => {
 			);
 
 			message = 'Export successfully!';
-			status = ResponeCodes.CREATED;
+			status = ResponeCodes.OK;
 		}
 
 		return {
