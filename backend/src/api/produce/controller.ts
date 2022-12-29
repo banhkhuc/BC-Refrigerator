@@ -12,15 +12,6 @@ const getProducts = async (req: Request, res: Response) => {
 	}
 };
 
-const getErrorProducts = async (req: Request, res: Response) => {
-	try {
-		const result = await service.getErrorProducts(req);
-		return new ApiResponse(result).send(res);
-	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't get products.", ResponeCodes.ERROR).send(res);
-	}
-};
-
 const getProduct = async (req: Request, res: Response) => {
 	try {
 		const result = await service.getProductById(req);
@@ -51,4 +42,4 @@ const exportProduct = async (req: Request, res: Response) => {
 	}
 };
 
-export { getProducts, getErrorProducts, getProduct, importProduct, exportProduct };
+export { getProducts, getProduct, importProduct, exportProduct };

@@ -4,9 +4,9 @@ import { getProductLine, getProductLineById, addProductLine, updateProductLine }
 
 const router = Router();
 
+router.get('/pagination', getProductLine);
 router.get('/:id', getProductLineById);
-router.get('/', getProductLine);
-router.post('/', [verifyToken, verifyAdmin], addProductLine);
-router.put('/:id', [verifyToken, verifyAdmin], updateProductLine);
+router.post('/', addProductLine);
+router.put('/:id', updateProductLine);
 
 export default router;

@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import { getUsers, getUser, deleteUser, getMe, changeInfo,changeFacilityInfo, changePassword, verifyPassword } from './controller';
+import { getUsers, getUser, deleteUser, getMe, changeInfo, changePassword, verifyPassword } from './controller';
 import { verifyToken, verifyAdmin } from 'middlewares';
 
 const router = Router();
 
 router.get('/me', [verifyToken], getMe);
 router.put('/change-info', [verifyToken], changeInfo);
-router.put('/change-facility-info', [verifyToken], changeFacilityInfo);
 router.put('/change-password', [verifyToken], changePassword);
 router.post('/verify-password', [verifyToken], verifyPassword);
 

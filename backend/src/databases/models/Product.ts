@@ -1,12 +1,4 @@
-import {
-	CreationOptional,
-	DataTypes,
-	ForeignKey,
-	InferAttributes,
-	InferCreationAttributes,
-	Model,
-	NonAttribute
-} from 'sequelize';
+import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import sequelize from 'databases';
 import ProductLine, { ProductLineModel } from './ProductLine';
 import Facility, { FacilityModel } from './Facility';
@@ -22,8 +14,6 @@ export interface ProductModel extends Model<InferAttributes<ProductModel>, Infer
 	status: string;
 	createdAt: CreationOptional<Date>;
 	updatedAt: CreationOptional<Date>;
-
-	ProductLine: NonAttribute<ProductLineModel>;
 }
 
 const Product = sequelize.define<ProductModel>(

@@ -8,7 +8,7 @@ const getProductLine = async (req: Request, res: Response) => {
 		const result = await service.getProductLine(req);
 		return new ApiResponse(result).send(res);
 	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't get product line.", ResponeCodes.ERROR).send(res);
+		return new ApiResponse(error.message, "Couldn't get ProductLine.", ResponeCodes.ERROR).send(res);
 	}
 };
 
@@ -18,7 +18,7 @@ const getProductLineById = async (req: Request, res: Response) => {
 		const { data, message, status } = result;
 		return new ApiResponse(data, message, status).send(res);
 	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't get product line.", ResponeCodes.ERROR).send(res);
+		return new ApiResponse(error.message, "Couldn't get ProductLine.", ResponeCodes.ERROR).send(res);
 	}
 };
 
@@ -28,7 +28,7 @@ const addProductLine = async (req: Request, res: Response) => {
 		const { data, message, status } = result;
 		return new ApiResponse(data, message, status).send(res);
 	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't add product line.", ResponeCodes.ERROR).send(res);
+		return new ApiResponse(error.message, "Couldn't add ProductLine.", ResponeCodes.ERROR).send(res);
 	}
 };
 
@@ -38,7 +38,7 @@ const updateProductLine = async (req: Request, res: Response) => {
 		const { data, message, status } = result;
 		return new ApiResponse(data, message, status).send(res);
 	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't update product line.", ResponeCodes.ERROR).send(res);
+		return new ApiResponse(error.message, "Couldn't update ProductLine.", ResponeCodes.ERROR).send(res);
 	}
 };
 

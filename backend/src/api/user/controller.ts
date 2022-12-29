@@ -35,7 +35,7 @@ const getMe = async (req: Request, res: Response) => {
 	}
 };
 
-// PUT: /users/change-info
+// PATCH: /users/change-info
 const changeInfo = async (req: Request, res: Response) => {
 	try {
 		const result = await service.changeInfo(req);
@@ -46,18 +46,7 @@ const changeInfo = async (req: Request, res: Response) => {
 	}
 };
 
-// PUT: /users/change-facility-info
-const changeFacilityInfo = async (req: Request, res: Response) => {
-	try {
-		const result = await service.changeFacilityInfo(req);
-		const { data, message, status } = result;
-		return new ApiResponse(data, message, status).send(res);
-	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't update info.", ResponeCodes.ERROR).send(res);
-	}
-};
-
-// PUT: /users/change-password
+// PATCH: /users/change-password
 const changePassword = async (req: Request, res: Response) => {
 	try {
 		const checkResult = await service.checkNewPassword(req);
@@ -94,4 +83,4 @@ const deleteUser = async (req: Request, res: Response) => {
 	}
 };
 
-export { getUsers, getUser, deleteUser, changeInfo, changeFacilityInfo, changePassword, verifyPassword, getMe };
+export { getUsers, getUser, deleteUser, changeInfo, changePassword, verifyPassword, getMe };
