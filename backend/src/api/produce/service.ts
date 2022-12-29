@@ -8,16 +8,44 @@ import ImportPayLoad from './ImportPayload';
 import ExportPayload from './ExportPayload';
 import { generateProductCode } from 'utils/helpers/generate';
 import FacilityType from 'utils/constants/FacilityType';
+import { Op } from 'sequelize';
 
 const getProducts = async (req: Request) => {
 	try {
-		const { offset, limit, order } = paginate(req);
+		const { offset, limit, order, query } = paginate(req);
 		const produceId = req.user.Facility.id;
 
 		const products = await Product.findAndCountAll({
 			where: {
 				produceId,
-				status: ProductStatus.PRODUCED
+				status: ProductStatus.PRODUCED,
+				code: {
+					[Op.like]: `%${query}%`
+				}
+			},
+			offset,
+			limit,
+			order: [order]
+		});
+
+		return products;
+	} catch (error) {
+		throw error;
+	}
+};
+
+const getErrorProducts = async (req: Request) => {
+	try {
+		const { offset, limit, order, query } = paginate(req);
+		const produceId = req.user.Facility.id;
+
+		const products = await Product.findAndCountAll({
+			where: {
+				produceId,
+				status: ProductStatus.ERROR,
+				code: {
+					[Op.like]: `%${query}%`
+				}
 			},
 			offset,
 			limit,
@@ -151,4 +179,4 @@ const exportProduct = async (req: Request) => {
 	}
 };
 
-export { getProducts, getProductById, importProduct, exportProduct };
+export { getProducts, getErrorProducts,getProductById, importProduct, exportProduct };

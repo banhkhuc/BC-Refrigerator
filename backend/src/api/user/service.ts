@@ -6,6 +6,7 @@ import UserInfo from './UserInfo';
 import paginate from 'utils/helpers/pagination';
 import { Op } from 'sequelize';
 import { UserModel } from 'databases/models/User';
+import FacilityInfo from './FacilityInfo';
 
 const getUsers = async (req: Request) => {
 	try {
@@ -126,6 +127,34 @@ const changeInfo = async (req: Request) => {
 	}
 };
 
+const changeFacilityInfo = async (req: Request) => {
+	try {
+		let data;
+		let message: string;
+		let status: number;
+
+		const facility = req.user.Facility;
+		const facilityInfo: FacilityInfo = req.body;
+
+		await facility.update({
+			name: facilityInfo.name,
+			address: facilityInfo.address,
+			imageUrl: facilityInfo.imageUrl
+		});
+
+		message = 'Update facility successfully!';
+		status = ResponeCodes.OK;
+
+		return {
+			data,
+			message,
+			status
+		};
+	} catch (error) {
+		throw error;
+	}
+};
+
 const verifyPassword = async (req: Request) => {
 	try {
 		let data: boolean;
@@ -234,4 +263,4 @@ const deleteUser = async (req: Request) => {
 	}
 };
 
-export { getUsers, getUserById, deleteUser, changeInfo, changePassword, verifyPassword, checkNewPassword, getMe };
+export { getUsers, getUserById, deleteUser, changeInfo, changeFacilityInfo, changePassword, verifyPassword, checkNewPassword, getMe };
