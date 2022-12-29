@@ -2,6 +2,7 @@ import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreation
 import sequelize from 'databases';
 import Product, { ProductModel } from './Product';
 import Facility, { FacilityModel } from './Facility';
+import ProductStatus from 'utils/constants/ProductStatus';
 
 export interface OrderModel extends Model<InferAttributes<OrderModel>, InferCreationAttributes<OrderModel>> {
 	id: CreationOptional<number>;
@@ -33,7 +34,6 @@ const Order = sequelize.define<OrderModel>(
 			type: DataTypes.INTEGER
 		},
 		orderDate: {
-			allowNull: false,
 			type: DataTypes.DATE
 		},
 		orderName: {
@@ -69,7 +69,7 @@ Order.belongsTo(Product, {
 	foreignKey: 'productCode'
 });
 
-Facility.hasMany(Order, {
+Facility.hasOne(Order, {
 	foreignKey: 'distributeId'
 });
 

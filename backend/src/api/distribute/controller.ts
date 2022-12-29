@@ -32,9 +32,9 @@ const importProduct = async (req: Request, res: Response) => {
 	}
 };
 
-const exportOrder = async (req: Request, res: Response) => {
+const exportProduct = async (req: Request, res: Response) => {
 	try {
-		const result = await service.exportOrder(req);
+		const result = await service.exportProduct(req);
 		const { data, message, status } = result;
 		return new ApiResponse(data, message, status).send(res);
 	} catch (error) {
@@ -42,14 +42,4 @@ const exportOrder = async (req: Request, res: Response) => {
 	}
 };
 
-const exportGuarantee = async (req: Request, res: Response) => {
-	try {
-		const result = await service.exportGuarantee(req);
-		const { data, message, status } = result;
-		return new ApiResponse(data, message, status).send(res);
-	} catch (error) {
-		return new ApiResponse(error.message, "Couldn't export product.", ResponeCodes.ERROR).send(res);
-	}
-};
-
-export { getProducts, getProduct, importProduct, exportOrder, exportGuarantee };
+export { getProducts, getProduct, importProduct, exportProduct };

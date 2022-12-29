@@ -1,4 +1,4 @@
-interface ExportOrderPayload {
+interface ExportPayload {
 	productCode: string;
 	orderDate?: Date;
 	orderName: string;
@@ -6,4 +6,4 @@ interface ExportOrderPayload {
 	orderAdress?: string;
 }
 
-export default ExportOrderPayload;
+export default ExportPayload;

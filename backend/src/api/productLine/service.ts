@@ -11,7 +11,7 @@ const getProductLine = async (req: Request) => {
 
 		const productLines = await ProductLine.findAll({
 			where: {
-				model: {
+				name: {
 					[Op.like]: `%${query}%`
 				}
 			}
@@ -65,14 +65,14 @@ const addProductLine = async (req: Request) => {
 
 		const newProductLines: ProductLinePayload = req.body;
 
-		if (!newProductLines.model || !newProductLines.guaranteePeriod) {
+		if (!newProductLines.name) {
 			data = null;
-			message = 'Invalid payload.';
+			message = 'Name null.';
 			status = ResponeCodes.BAD_REQUEST;
 		} else {
 			const [productline, created] = await ProductLine.findOrCreate({
 				where: {
-					model: newProductLines.model
+					name: newProductLines.name
 				},
 				defaults: {
 					...newProductLines
@@ -84,7 +84,8 @@ const addProductLine = async (req: Request) => {
 				message = 'Add successfully!';
 				status = ResponeCodes.CREATED;
 			} else {
-				message = 'Productline exists.';
+				data = null;
+				message = 'productline exists.';
 				status = ResponeCodes.OK;
 			}
 		}
