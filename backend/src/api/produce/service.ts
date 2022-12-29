@@ -23,6 +23,7 @@ const getProducts = async (req: Request) => {
 					[Op.like]: `%${query}%`
 				}
 			},
+			include: ProductLine,
 			offset,
 			limit,
 			order: [order]

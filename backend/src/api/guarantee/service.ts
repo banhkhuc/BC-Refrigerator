@@ -13,12 +13,18 @@ import { Op } from 'sequelize';
 const getProducts = async (req: Request) => {
 	try {
 		const { offset, limit, order } = paginate(req);
-		const distributeId = req.user.Facility.id;
+		const guaranteeId = req.user.Facility.id;
 
-		const products = await Product.findAndCountAll({
+		const products = await Insurance.findAndCountAll({
 			where: {
-				distributeId,
-				status: ProductStatus.GUARANTING
+				guaranteeId
+			},
+			include: {
+				model: Product,
+				where: {
+					status: ProductStatus.GUARANTING
+				},
+				include: [ProductLine]
 			},
 			offset,
 			limit,
