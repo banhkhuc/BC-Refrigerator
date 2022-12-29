@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import ResponeCodes from 'utils/constants/ResponeCode';
 import paginate from 'utils/helpers/pagination';
-import { Facility, Product, ProductLine } from 'databases/models';
+import { Facility, Product, ProductLine, Statistics } from 'databases/models';
 import { ProductModel } from 'databases/models/Product';
 import ProductStatus from 'utils/constants/ProductStatus';
 import ImportPayload from './ImportPayload';
@@ -161,6 +161,30 @@ const exportOrder = async (req: Request) => {
 					{ transaction }
 				);
 				await transaction.commit();
+
+				let produceId = product.distributeId;
+				let month = product.createdAt.getMonth() + 1;
+				let t;
+				if(month < 10){
+					t = product.createdAt.getFullYear()+"/"+"0" + month;
+				} 
+				else{
+					t = product.createdAt.getFullYear()+"/"+ month;
+					}
+				let s = await Statistics.findOne({ where: { time: t, facilityId : produceId, productLineModel: product.productLineModel} });
+				if(s == null){ 
+					let statistic = await Statistics.findAll({ where: { facilityId : produceId, productLineModel: product.productLineModel  }, order: [['createdAt', 'DESC']],});
+					let w = 1;
+					if(statistic[0] != null ) w = statistic[0].warehouse + 1; 
+					let new_statistic = await Statistics.create({time: t, warehouse: 0, work: w, facilityId : produceId, productLineModel : product.productLineModel } );
+				}
+				else{
+					s.warehouse--;
+					s.work++;
+					await s.save();
+					}
+
+
 				data = order;
 				message = 'Export customer successfully!';
 				status = ResponeCodes.CREATED;

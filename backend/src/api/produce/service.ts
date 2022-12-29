@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import ResponeCodes from 'utils/constants/ResponeCode';
 import paginate from 'utils/helpers/pagination';
-import { Facility, Product, ProductLine } from 'databases/models';
+import { Facility, Product, ProductLine, Statistics } from 'databases/models';
 import { ProductModel } from 'databases/models/Product';
 import ProductStatus from 'utils/constants/ProductStatus';
 import ImportPayLoad from './ImportPayload';
@@ -114,6 +114,35 @@ const importProduct = async (req: Request) => {
 				status: ProductStatus.PRODUCED
 			});
 			data = product;
+			let month = product.createdAt.getMonth() + 1;
+			let t;
+			if (month < 10) {
+				t = product.createdAt.getFullYear() + '/' + '0' + month;
+			} else {
+				t = product.createdAt.getFullYear() + '/' + month;
+			}
+			let s = await Statistics.findOne({
+				where: { time: t, facilityId: produceId, productLineModel: product.productLineModel }
+			});
+			if (s == null) {
+				let statistic = await Statistics.findAll({
+					where: { facilityId: produceId, productLineModel: product.productLineModel },
+					order: [['createdAt', 'DESC']]
+				});
+				let wh = 1;
+				if (statistic[0] != null) wh = statistic[0].warehouse + 1;
+				let new_statistic = await Statistics.create({
+					time: t,
+					warehouse: wh,
+					work: 1,
+					facilityId: produceId,
+					productLineModel: product.productLineModel
+				});
+			} else {
+				s.warehouse++;
+				s.work++;
+				await s.save();
+			}
 			message = 'Import successfully!';
 			status = ResponeCodes.CREATED;
 		}
@@ -163,7 +192,63 @@ const exportProduct = async (req: Request) => {
 						);
 					})
 				);
-
+				for (let i in products) {
+					let product = await Product.findOne({ where: { code: products[i] } });
+					let produceId = product.produceId;
+					let month = product.createdAt.getMonth() + 1;
+					let t;
+					if (month < 10) {
+						t = product.createdAt.getFullYear() + '/' + '0' + month;
+					} else {
+						t = product.createdAt.getFullYear() + '/' + month;
+					}
+					if (0 == 0) {
+						let s = await Statistics.findOne({
+							where: { time: t, facilityId: produceId, productLineModel: product.productLineModel }
+						});
+						if (s == null) {
+							let statistic = await Statistics.findAll({
+								where: { facilityId: produceId, productLineModel: product.productLineModel },
+								order: [['createdAt', 'DESC']]
+							});
+							let wh = 0;
+							if (statistic[0] != null) wh = statistic[0].warehouse - 1;
+							let new_statistic = await Statistics.create({
+								time: t,
+								warehouse: wh,
+								work: 0,
+								facilityId: produceId,
+								productLineModel: product.productLineModel
+							});
+						} else {
+							s.warehouse--;
+							await s.save();
+						}
+					}
+					if (0 == 0) {
+						let s = await Statistics.findOne({
+							where: { time: t, facilityId: distributeId, productLineModel: product.productLineModel }
+						});
+						if (s == null) {
+							let statistic = await Statistics.findAll({
+								where: { facilityId: distributeId, productLineModel: product.productLineModel },
+								order: [['createdAt', 'DESC']]
+							});
+							let wh = 1;
+							if (statistic[0] != null) wh = statistic[0].warehouse + 1;
+							let new_statistic = await Statistics.create({
+								time: t,
+								warehouse: wh,
+								work: 0,
+								facilityId: distributeId,
+								productLineModel: product.productLineModel
+							});
+						} else {
+							s.warehouse++;
+							await s.save();
+						}
+					}
+				}
 				message = 'Export successfully!';
 				status = ResponeCodes.OK;
 			}
