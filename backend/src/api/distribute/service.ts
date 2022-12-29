@@ -1,13 +1,17 @@
 import { Request } from 'express';
 import ResponeCodes from 'utils/constants/ResponeCode';
 import paginate from 'utils/helpers/pagination';
-import { Product, ProductLine } from 'databases/models';
+import { Facility, Product, ProductLine, Statistics } from 'databases/models';
 import { ProductModel } from 'databases/models/Product';
 import ProductStatus from 'utils/constants/ProductStatus';
 import ImportPayload from './ImportPayload';
-import ExportPayload from './ExportPayload';
+import ExportOrderPayload from './ExportOrderPayload';
 import Order, { OrderModel } from 'databases/models/Order';
 import sequelize from 'databases';
+import Insurance, { InsuranceModel } from 'databases/models/Insurance';
+import ExportGuaranteePayload from './ExportGuaranteePayload';
+import FacilityType from 'utils/constants/FacilityType';
+import { timeDiffByMonth } from 'utils/helpers/timeService';
 
 const getProducts = async (req: Request) => {
 	try {
@@ -111,7 +115,20 @@ const importProduct = async (req: Request) => {
 	}
 };
 
-const exportProduct = async (req: Request) => {
+const verifyProduct = async (productCode: string, distributeId: number) => {
+	return await Product.findOne({
+		where: {
+			code: productCode,
+			distributeId
+		},
+		include: {
+			model: ProductLine,
+			attributes: ['guaranteePeriod']
+		}
+	});
+};
+
+const exportOrder = async (req: Request) => {
 	const transaction = await sequelize.transaction();
 	try {
 		let data: OrderModel;
@@ -119,19 +136,14 @@ const exportProduct = async (req: Request) => {
 		let status: number;
 
 		const distributeId = req.user.Facility.id;
-		const exportData: ExportPayload = req.body;
+		const exportData: ExportOrderPayload = req.body;
 
-		const product = await Product.findOne({
-			where: {
-				code: exportData.productCode
-			}
-		});
-
-		if (!exportData.productCode || !exportData.orderName) {
+		if (!exportData.productCode || !exportData.orderName || !exportData.orderDate) {
 			message = 'Invalid payload.';
 			status = ResponeCodes.BAD_REQUEST;
 		} else {
-			if (product.distributeId !== distributeId || product.status !== ProductStatus.INSTOCK) {
+			const product = await verifyProduct(exportData.productCode, distributeId);
+			if (!product || product.status !== ProductStatus.INSTOCK) {
 				message = 'Invalid product.';
 				status = ResponeCodes.BAD_REQUEST;
 			} else {
@@ -149,8 +161,32 @@ const exportProduct = async (req: Request) => {
 					{ transaction }
 				);
 				await transaction.commit();
+
+				let produceId = product.distributeId;
+				let month = product.createdAt.getMonth() + 1;
+				let t;
+				if(month < 10){
+					t = product.createdAt.getFullYear()+"/"+"0" + month;
+				} 
+				else{
+					t = product.createdAt.getFullYear()+"/"+ month;
+					}
+				let s = await Statistics.findOne({ where: { time: t, facilityId : produceId, productLineModel: product.productLineModel} });
+				if(s == null){ 
+					let statistic = await Statistics.findAll({ where: { facilityId : produceId, productLineModel: product.productLineModel  }, order: [['createdAt', 'DESC']],});
+					let w = 1;
+					if(statistic[0] != null ) w = statistic[0].warehouse + 1; 
+					let new_statistic = await Statistics.create({time: t, warehouse: 0, work: w, facilityId : produceId, productLineModel : product.productLineModel } );
+				}
+				else{
+					s.warehouse--;
+					s.work++;
+					await s.save();
+					}
+
+
 				data = order;
-				message = 'Export successfully!';
+				message = 'Export customer successfully!';
 				status = ResponeCodes.CREATED;
 			}
 		}
@@ -165,4 +201,73 @@ const exportProduct = async (req: Request) => {
 	}
 };
 
-export { getProducts, getProductById, importProduct, exportProduct };
+const exportGuarantee = async (req: Request) => {
+	const transaction = await sequelize.transaction();
+	try {
+		let data: InsuranceModel;
+		let message: string;
+		let status: number;
+
+		const distributeId = req.user.Facility.id;
+		const exportData: ExportGuaranteePayload = req.body;
+		const { productCode, insuranceDate, guaranteeId, error } = exportData;
+
+		if (!productCode || !guaranteeId || !insuranceDate) {
+			message = 'Invalid payload.';
+			status = ResponeCodes.BAD_REQUEST;
+		} else {
+			const product = await verifyProduct(productCode, distributeId);
+
+			if (!product || product.status !== ProductStatus.SOLD || new Date(insuranceDate) < new Date(product.mfg)) {
+				message = 'Invalid product.';
+				status = ResponeCodes.BAD_REQUEST;
+			} else {
+				const guarantee = await Facility.findByPk(guaranteeId);
+				if (guarantee.type !== FacilityType.GUARANTEE) {
+					message = 'Invalid guarantee.';
+					status = ResponeCodes.BAD_REQUEST;
+				} else {
+					const order = await Order.findOne({
+						where: {
+							productCode
+						}
+					});
+					const diffMonth = timeDiffByMonth(new Date(order.orderDate), new Date(insuranceDate));
+					const guaranteePeriod = product.ProductLine.guaranteePeriod;
+					if (diffMonth > guaranteePeriod) {
+						message = 'Time expired.';
+						status = ResponeCodes.OK;
+					} else {
+						const insurance = await Insurance.create(
+							{
+								...exportData,
+								distributeId
+							},
+							{ transaction }
+						);
+						await product.update(
+							{
+								status: ProductStatus.GUARANTING
+							},
+							{ transaction }
+						);
+						await transaction.commit();
+						data = insurance;
+						message = 'Export guarantee successfully!';
+						status = ResponeCodes.CREATED;
+					}
+				}
+			}
+		}
+		return {
+			data,
+			message,
+			status
+		};
+	} catch (error) {
+		await transaction.commit();
+		throw error;
+	}
+};
+
+export { getProducts, getProductById, importProduct, exportOrder, exportGuarantee };
