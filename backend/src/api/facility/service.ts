@@ -18,11 +18,6 @@ const getFacilities = async (req: Request) => {
 						name: {
 							[Op.like]: `%${query}%`
 						}
-					},
-					{
-						address: {
-							[Op.like]: `%${query}%`
-						}
 					}
 				]
 			},
