@@ -164,12 +164,12 @@ const exportOrder = async (req: Request) => {
 				await transaction.commit();
 
 				let produceId = product.distributeId;
-				let month = product.createdAt.getMonth() + 1;
+				let month = product.distributeDate.getMonth() + 1;
 				let t;
 				if (month < 10) {
-					t = product.createdAt.getFullYear() + '/' + '0' + month;
+					t = product.distributeDate.getFullYear() + '/' + '0' + month;
 				} else {
-					t = product.createdAt.getFullYear() + '/' + month;
+					t = product.distributeDate.getFullYear() + '/' + month;
 				}
 				let s = await Statistics.findOne({
 					where: { time: t, facilityId: produceId, productLineModel: product.productLineModel }
@@ -179,18 +179,18 @@ const exportOrder = async (req: Request) => {
 						where: { facilityId: produceId, productLineModel: product.productLineModel },
 						order: [['createdAt', 'DESC']]
 					});
-					let w = 1;
-					if (statistic[0] != null) w = statistic[0].warehouse + 1;
+					let wh = 0;
+					if (statistic[0] != null) wh = statistic[0].warehouse - 1;
 					let new_statistic = await Statistics.create({
 						time: t,
-						warehouse: 0,
-						work: w,
+						warehouse: wh ,
+						work: 1,
 						facilityId: produceId,
 						productLineModel: product.productLineModel
 					});
 				} else {
-					s.warehouse--;
 					s.work++;
+					s.warehouse--;
 					await s.save();
 				}
 
@@ -220,7 +220,6 @@ const exportGuarantee = async (req: Request) => {
 		const distributeId = req.user.Facility.id;
 		const exportData: ExportGuaranteePayload = req.body;
 		const { productCode, insuranceDate, guaranteeId, error } = exportData;
-
 		if (!productCode || !guaranteeId || !insuranceDate) {
 			message = 'Invalid payload.';
 			status = ResponeCodes.BAD_REQUEST;
@@ -262,6 +261,38 @@ const exportGuarantee = async (req: Request) => {
 						);
 						await transaction.commit();
 						data = insurance;
+
+						let produceId = insurance.guaranteeId;
+						var d = new Date();
+						let month = d.getMonth() + 1;
+						let t;
+						if (month < 10) {
+							t = d.getFullYear() + '/' + '0' + month;
+						} else {
+							t = d.getFullYear() + '/' + month;
+						}
+						let s = await Statistics.findOne({
+							where: { time: t, facilityId: produceId, productLineModel: product.productLineModel }
+						});
+						if (s == null) {
+							let statistic = await Statistics.findAll({
+								where: { facilityId: produceId, productLineModel: product.productLineModel },
+								order: [['createdAt', 'DESC']]
+							});
+							let wh = 1;
+							if (statistic[0] != null) wh = statistic[0].warehouse + 1;
+							let new_statistic = await Statistics.create({
+								time: t,
+								warehouse: wh,
+								work: 0,
+								facilityId: produceId,
+								productLineModel: product.productLineModel
+							});
+						} else {
+							s.warehouse++;
+							await s.save();
+						}
+
 						message = 'Export guarantee successfully!';
 						status = ResponeCodes.CREATED;
 					}
