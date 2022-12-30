@@ -3,7 +3,7 @@ import * as service from './service';
 import { ApiResponse } from 'utils/rest/ApiResponse';
 import ResponeCodes from 'utils/constants/ResponeCode';
 
-const getStatisticsDacilityById = async (req: Request, res: Response) => {
+const getStatisticsFacilityById = async (req: Request, res: Response) => {
 	try {
 		const result = await service.getStatisticsDacilityById(req);
 		const { data, message, status } = result;
@@ -42,4 +42,4 @@ const getStatisticsguarantee = async (req: Request, res: Response) => {
 		return new ApiResponse(error.message, "Couldn't get ProductLine.", ResponeCodes.ERROR).send(res);
 	}
 };
-export { getStatisticsDacilityById, getStatisticsProduce, getStatisticsDistribute, getStatisticsguarantee};
+export { getStatisticsFacilityById, getStatisticsProduce, getStatisticsDistribute, getStatisticsguarantee};

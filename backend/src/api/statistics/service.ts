@@ -12,7 +12,7 @@ const getStatisticsDacilityById = async (req: Request) => {
 		let status: number;
 
 
-		const id = parseInt(req.params.id);
+		const id = req.user.Facility.id;
 		if (isNaN(id)) {
 			data = null;
 			message = 'Invalid identifier.';

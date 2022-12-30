@@ -11,9 +11,12 @@ router.get('/guarantee/:id', getStatisticsDacilityById);
 router.get('/produce', getStatisticsProduce);
 router.get('/distribute', getStatisticsDistribute);
 router.get('/guarantee', getStatisticsguarantee);
+
 router.get('/produce/productline/:slug', getStatisticsProduceProductLineById);
 router.get('/distribute/productline/:slug', getStatisticsDistributeProductLineById);
 router.get('/guarantee/productline/:slug', getStatisticsguaranteeProductLineById);
+
+
 
 router.get('/produce/:id/productline/:slug', getStatisticsDacilityProductLineById);
 router.get('/distribute/:id/productline/:slug', getStatisticsDacilityProductLineById);
