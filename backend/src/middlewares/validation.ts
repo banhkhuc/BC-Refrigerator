@@ -38,6 +38,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 const verifyAdmin = async (req: Request, res: Response, next: NextFunction) => {
 	const user: UserModel = req.user;
 	const facilityType = user.Facility.type;
+	console.log(facilityType);
 
 	if (facilityType !== FacilityType.ADMIN) {
 		return new ApiResponse(null, 'Not permission!', ResponeCodes.UNAUTHORIZED).send(res);
