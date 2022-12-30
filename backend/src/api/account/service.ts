@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import LoginPayLoad from './LoginPayload';
-import { User, UserCode } from 'databases/models';
+import { Facility, User, UserCode } from 'databases/models';
 import ResponeCodes from 'utils/constants/ResponeCode';
 import { generateAccount, generateCode, generatePassword, generateToken } from 'utils/helpers/generate';
 import CreatePayload from './CreatePayload';
@@ -12,7 +12,8 @@ const verifyAccount = async (account: string) => {
 	const user = await User.findOne({
 		where: {
 			account
-		}
+		},
+		include: Facility
 	});
 	return user;
 };
